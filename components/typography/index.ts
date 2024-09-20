@@ -1,0 +1,1 @@
+export { TypoBase } from "./Typo";

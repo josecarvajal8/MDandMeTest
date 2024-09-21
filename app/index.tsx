@@ -1,11 +1,21 @@
 import { LayoutGradient } from "@/components/layout";
-import React from "react";
-import { Text } from "react-native";
+import { TypoBase } from "@/components/typography";
+import { getPosts } from "@/services/posts";
+import React, { useEffect } from "react";
 
 export default function HomeScreen() {
+  const getPostsData = async () => {
+    const data = await getPosts();
+    console.log(data.length);
+  };
+  useEffect(() => {
+    getPostsData();
+  }, []);
   return (
     <LayoutGradient>
-      <Text>{"Hello"}</Text>
+      <TypoBase size="headline" fontStyle="bold">
+        {"Hello"}
+      </TypoBase>
     </LayoutGradient>
   );
 }

@@ -1,21 +1,28 @@
 import { LayoutGradient } from "@/components/layout";
-import { TypoBase } from "@/components/typography";
+import { Post } from "@/components/post/Post";
+import { Post as IPost } from "@/models/post";
 import { getPosts } from "@/services/posts";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { FlatList } from "react-native";
 
 export default function HomeScreen() {
+  const [nextPage, setNextPage] = useState<number | null>(1);
+  const [posts, setPosts] = useState<IPost[]>([]);
   const getPostsData = async () => {
-    const data = await getPosts();
-    console.log(data.length);
+    if (nextPage) {
+      const data = await getPosts(nextPage);
+      setPosts([...posts, ...data.posts]);
+    }
   };
   useEffect(() => {
     getPostsData();
   }, []);
   return (
     <LayoutGradient>
-      <TypoBase size="headline" fontStyle="bold">
-        {"Hello"}
-      </TypoBase>
+      <FlatList
+        data={posts}
+        renderItem={({ item }) => <Post data={item} />}
+      />
     </LayoutGradient>
   );
 }

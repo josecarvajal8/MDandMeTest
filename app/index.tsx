@@ -38,6 +38,7 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <Post data={item} updatePostCallback={updatePost} />
         )}
+        contentContainerStyle={{ paddingBottom: 120 }}
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={separator}
         onEndReached={getPostsData}

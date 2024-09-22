@@ -1,4 +1,4 @@
-import { PostResponse } from "@/models/post";
+import { Post, PostResponse } from "@/models/post";
 import { fetchData } from "@/utils/fetcher";
 
 const BASE_URL = "http://localhost:3001";
@@ -19,11 +19,19 @@ export const getPosts = async (page: number) => {
   };
 };
 
-export const updatePost = async (postId: number, data: Record<string, any>) => {
+export const getPostById = async (postId: string) => {
+  const res = await fetchData<Post>({
+    url: `${BASE_URL}/posts/${postId}`,
+    method: "GET",
+  });
+  return res;
+}
+
+export const updatePost = async (postId: string, data: Record<string, any>) => {
   const res = await fetchData({
     url: `${BASE_URL}/posts/${postId}`,
     method: "PATCH",
-    body: JSON.stringify(data),
+    body: data,
   });
   return res;
 };

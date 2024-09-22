@@ -95,6 +95,14 @@ export const Post: FC<PostProps> = ({ data, updatePostCallback }) => {
     handlers.off();
   };
 
+  const onAddHug = async () => {
+    const hugPayload = {
+      num_hugs: num_hugs + 1,
+    };
+    await updatePost(id, hugPayload);
+    await updatePostCallback(id);
+  };
+
   return (
     <View style={styles.container}>
       <TrayModal
@@ -118,7 +126,7 @@ export const Post: FC<PostProps> = ({ data, updatePostCallback }) => {
         <TypoBase style={{ textAlign: "justify" }}>{assessment}</TypoBase>
       </CollapsableContent>
       <View style={styles.containerInteractions}>
-        <Pressable style={styles.buttonReactions}>
+        <Pressable onPress={onAddHug} style={styles.buttonReactions}>
           <Feather name="heart" size={24} color={Colors.dark_purple} />
           <TypoBase>
             {num_hugs !== 1 ? `${num_hugs} Hugs` : `${num_hugs} Hug`}

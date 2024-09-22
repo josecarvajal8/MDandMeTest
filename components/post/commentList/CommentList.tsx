@@ -3,7 +3,7 @@ import { TypoBase } from "@/components/typography";
 import { Colors } from "@/constants/Colors";
 import { Post } from "@/models/post";
 import { Feather } from "@expo/vector-icons";
-import React, { FC, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import { FlatList, Pressable, TextInput, View } from "react-native";
 import { styles } from "./styles";
 
@@ -11,7 +11,19 @@ export const CommentsList: FC<{
   comments: Post["comments"];
   onComment: (commentValue: string, commentId?: string) => void;
 }> = ({ comments, onComment }) => {
-  const commentsArray = Object.values(comments);
+  const commentsValues = Object.values(comments);
+  const commentsArray = useMemo(() => {
+    const mainComments = commentsValues.filter((comment)=> !comment.parent_id)
+    return mainComments.map((comment) => {
+      const replies = commentsValues.filter(
+        (child) => child.parent_id === comment.id
+      );
+      return {
+        ...comment,
+        replies,
+      };
+    });
+  }, [comments]);
   const separator = () => <View style={{ height: 16 }} />;
   const [commentValue, setCommentValue] = useState<string>("");
 

@@ -9,5 +9,10 @@ export const styles = StyleSheet.create({
     color: Colors.common.white,
     textAlign: "right",
     width: "100%",
-  }
+  },
+  containerReplyButtons:{
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
 });

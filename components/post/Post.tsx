@@ -16,6 +16,7 @@ import { Colors } from "@/constants/Colors";
 import { TrayModal } from "../modal";
 import { CommentsList } from "./commentList/CommentList";
 import { updatePost } from "@/services/posts";
+import { getRandomName } from "@/utils/utilities";
 
 interface PostProps {
   data: IPost;
@@ -67,7 +68,7 @@ export const Post: FC<PostProps> = ({ data }) => {
   const { title, patient_description, num_hugs, comments, assessment, id } =
     data;
   const commentsKeys = Object.keys(comments);
-  const numOfComments = commentsKeys.length;
+  const numOfComments =  Object.values(comments).filter((comment)=> !comment.parent_id).length;
 
   const { state: showComments, handlers } = useToggle(false);
   const onCommentPost = async (comment: string, commentId?: string) => {
@@ -77,7 +78,8 @@ export const Post: FC<PostProps> = ({ data }) => {
     const commentPayload = {
       comments: {
         [`${lastCommentKey + 1}`]: {
-          display_name: "John Doe",
+          display_name: getRandomName(),
+          parent_id: commentId ? parseInt(commentId) : null,
           text: comment,
           created_at: new Date().toISOString(),
         },
@@ -85,7 +87,6 @@ export const Post: FC<PostProps> = ({ data }) => {
       },
     };
     const data = await updatePost(id, commentPayload);
-    console.log(data);
   };
 
   return (

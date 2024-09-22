@@ -31,3 +31,9 @@ export const timeAgo = (date: Date): string => {
     return `${yearsAgo} year${yearsAgo !== 1 ? "s" : ""} ago`;
   }
 };
+
+export const getRandomName = (): string => {
+  const names = ['John', 'Jane', 'Alice', 'Bob', 'Charlie', 'David', 'Eve'];
+  const randomIndex = Math.floor(Math.random() * names.length);
+  return names[randomIndex];
+};

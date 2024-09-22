@@ -1,18 +1,94 @@
-import { View } from "react-native";
+import {
+  Pressable,
+  View,
+  Animated,
+  LayoutChangeEvent,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { TypoBase } from "../typography";
 import { Post as IPost } from "@/models/post";
-import { FC } from "react";
+import React, { FC, useRef, useState } from "react";
+import { styles } from "./styles";
+import { Feather } from "@expo/vector-icons";
+import { useToggle } from "@/hooks/useToggle";
+import { LinearGradient } from "expo-linear-gradient";
+import { Colors } from "@/constants/Colors";
 
 interface PostProps {
-    data: IPost;
+  data: IPost;
 }
 
-export const Post: FC<PostProps> = ({data}) => {
-    const {title, assessment} = data;
+const CollapsableContent: FC<{ children: React.ReactNode, initialHeight?: number }> = ({
+  children,
+  initialHeight = 100,
+}) => {
+  const animationHeight = useRef(new Animated.Value(initialHeight)).current;
+  const { state: isExpanded, handlers } = useToggle(false);
+  const [contentHeight, setContentHeight] = useState(0);
+  const onExpand = () => {
+    const finalHeight = isExpanded ? 100 : contentHeight;
+
+    Animated.timing(animationHeight, {
+      toValue: finalHeight,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+
+    handlers.toggle();
+  };
+  const onContentLayout = (event: LayoutChangeEvent) => {
+    const { height } = event.nativeEvent.layout;
+    setContentHeight(height);
+  };
   return (
-    <View>
-        <TypoBase >{title}</TypoBase>
-        <TypoBase>{assessment}</TypoBase>
+    <TouchableWithoutFeedback onPress={onExpand}>
+      <Animated.View style={{ height: animationHeight, overflow: "hidden" }}>
+        <View
+          onLayout={onContentLayout}
+          style={{ position: "absolute", gap: 8 }}
+        >
+          {children}
+        </View>
+        {!isExpanded && (
+          <LinearGradient
+            colors={["rgba(255, 255, 255,0.5)", Colors.common.white]}
+            style={styles.fadeGradient}
+          />
+        )}
+      </Animated.View>
+    </TouchableWithoutFeedback>
+  );
+};
+
+export const Post: FC<PostProps> = ({ data }) => {
+  const { title, patient_description, num_hugs, comments, assessment } = data;
+  const numOfComments = Object.keys(comments).length;
+
+  return (
+    <View style={styles.container}>
+      <TypoBase fontStyle="bold" size="title" style={{ textAlign: "justify" }}>
+        {title}
+      </TypoBase>
+      <CollapsableContent>
+        <TypoBase fontStyle="semibold">{"Patient description"}</TypoBase>
+        <TypoBase style={{ textAlign: "justify" }}>
+          {patient_description}
+        </TypoBase>
+      </CollapsableContent>
+      <CollapsableContent initialHeight={150}>
+        <TypoBase fontStyle="semibold">{"Assessment"}</TypoBase>
+        <TypoBase style={{ textAlign: "justify" }}>{assessment}</TypoBase>
+      </CollapsableContent>
+      <View style={styles.containerInteractions}>
+        <Pressable style={styles.buttonReactions}>
+          <Feather name="heart" size={24} color="black" />
+          <TypoBase>{`${num_hugs} Hugs`}</TypoBase>
+        </Pressable>
+        <Pressable style={styles.buttonReactions}>
+          <Feather name="message-circle" size={24} color="black" />
+          <TypoBase>{`${numOfComments} Comments`}</TypoBase>
+        </Pressable>
+      </View>
     </View>
   );
-}
+};

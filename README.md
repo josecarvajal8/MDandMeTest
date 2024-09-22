@@ -15,7 +15,7 @@ This project was built using React Native with expo. To dive in, just make sure 
 
 `git clone https://github.com/josecarvajal8/MDandMeTest.git`
 
-#### Step 2: Dependencies and pods
+#### Step 2: Dependencies
 
 Install the dependencies by running:
 `yarn`

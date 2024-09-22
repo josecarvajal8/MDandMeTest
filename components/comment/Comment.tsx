@@ -14,6 +14,7 @@ interface CommentData extends IComment {
 interface CommentProps {
   data: CommentData;
   isReply?: boolean;
+  setReplyId?: (id: number) => void;
 }
 const ListOfReplies: React.FC<{ replies: IComment[] }> = ({ replies }) => {
   return (
@@ -24,9 +25,14 @@ const ListOfReplies: React.FC<{ replies: IComment[] }> = ({ replies }) => {
     </View>
   );
 };
-export const Comment: React.FC<CommentProps> = ({ data, isReply = false }) => {
-  const { display_name, text, created_at, replies = [] } = data;
+export const Comment: React.FC<CommentProps> = ({
+  data,
+  isReply = false,
+  setReplyId,
+}) => {
+  const { display_name, text, created_at, replies = [], id } = data;
   const { state: showReplies, handlers } = useToggle(false);
+  
   return (
     <View style={styles.container}>
       <TypoBase
@@ -52,7 +58,7 @@ export const Comment: React.FC<CommentProps> = ({ data, isReply = false }) => {
           ) : (
             <></>
           )}
-          <TouchableOpacity onPress={handlers.toggle}>
+          <TouchableOpacity onPress={() => setReplyId && setReplyId(id)}>
             <TypoBase
               size="caption"
               fontStyle="bold"

@@ -3,17 +3,17 @@ import { TypoBase } from "@/components/typography";
 import { Colors } from "@/constants/Colors";
 import { Post } from "@/models/post";
 import { Feather } from "@expo/vector-icons";
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, TextInput, View } from "react-native";
 import { styles } from "./styles";
 
 export const CommentsList: FC<{
   comments: Post["comments"];
-  onComment: (commentValue: string, commentId?: string) => void;
+  onComment: (commentValue: string, commentId?: number | null) => void;
 }> = ({ comments, onComment }) => {
   const commentsValues = Object.values(comments);
   const commentsArray = useMemo(() => {
-    const mainComments = commentsValues.filter((comment)=> !comment.parent_id)
+    const mainComments = commentsValues.filter((comment) => !comment.parent_id);
     return mainComments.map((comment) => {
       const replies = commentsValues.filter(
         (child) => child.parent_id === comment.id
@@ -26,6 +26,15 @@ export const CommentsList: FC<{
   }, [comments]);
   const separator = () => <View style={{ height: 16 }} />;
   const [commentValue, setCommentValue] = useState<string>("");
+  const [replyId, setReplyId] = useState<number | null>(null);
+  const refInput = React.useRef<TextInput>(null);
+  const userIsBeingReplied =
+    replyId !== null ? comments[replyId].display_name : null;
+  useEffect(() => {
+    if (replyId !== null) {
+      refInput.current?.focus();
+    }
+  }, [replyId]);
 
   return (
     <View style={styles.containerComments}>
@@ -34,7 +43,10 @@ export const CommentsList: FC<{
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={separator}
           data={commentsArray}
-          renderItem={({ item }) => <Comment data={item} />}
+          renderItem={({ item }) => (
+            <Comment data={item} setReplyId={(id) => setReplyId(id)} />
+          )}
+          keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ paddingBottom: 24 }}
         />
       ) : (
@@ -44,13 +56,18 @@ export const CommentsList: FC<{
       )}
       <View style={styles.containerCommentInput}>
         <TextInput
+          ref={refInput}
           style={styles.commentInput}
-          placeholder="Add a comment"
+          placeholder={
+            userIsBeingReplied
+              ? `Replying ${userIsBeingReplied}`
+              : "Add a comment"
+          }
           onChangeText={(value) => setCommentValue(value)}
         />
         <Pressable
           disabled={!Boolean(commentValue)}
-          onPress={() => onComment(commentValue)}
+          onPress={() => onComment(commentValue, replyId)}
           style={{
             ...styles.buttonComment,
             opacity: !Boolean(commentValue) ? 0.5 : 1,

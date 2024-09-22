@@ -68,10 +68,12 @@ export const Post: FC<PostProps> = ({ data }) => {
   const { title, patient_description, num_hugs, comments, assessment, id } =
     data;
   const commentsKeys = Object.keys(comments);
-  const numOfComments =  Object.values(comments).filter((comment)=> !comment.parent_id).length;
+  const numOfComments = Object.values(comments).filter(
+    (comment) => !comment.parent_id
+  ).length;
 
   const { state: showComments, handlers } = useToggle(false);
-  const onCommentPost = async (comment: string, commentId?: string) => {
+  const onCommentPost = async (comment: string, commentId?: number | null) => {
     const lastCommentKey = commentsKeys.length
       ? parseInt(commentsKeys[commentsKeys.length - 1])
       : 0;
@@ -79,14 +81,16 @@ export const Post: FC<PostProps> = ({ data }) => {
       comments: {
         [`${lastCommentKey + 1}`]: {
           display_name: getRandomName(),
-          parent_id: commentId ? parseInt(commentId) : null,
+          parent_id: commentId ? commentId : null,
           text: comment,
+          id: lastCommentKey + 1,
           created_at: new Date().toISOString(),
         },
         ...comments,
       },
     };
-    const data = await updatePost(id, commentPayload);
+    await updatePost(id, commentPayload);
+    handlers.off();
   };
 
   return (

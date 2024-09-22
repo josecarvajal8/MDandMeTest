@@ -20,6 +20,7 @@ import { getRandomName } from "@/utils/utilities";
 
 interface PostProps {
   data: IPost;
+  updatePostCallback: (postId: string) => void;
 }
 
 const CollapsableContent: FC<{
@@ -64,7 +65,7 @@ const CollapsableContent: FC<{
   );
 };
 
-export const Post: FC<PostProps> = ({ data }) => {
+export const Post: FC<PostProps> = ({ data, updatePostCallback }) => {
   const { title, patient_description, num_hugs, comments, assessment, id } =
     data;
   const commentsKeys = Object.keys(comments);
@@ -90,6 +91,7 @@ export const Post: FC<PostProps> = ({ data }) => {
       },
     };
     await updatePost(id, commentPayload);
+    await updatePostCallback(id);
     handlers.off();
   };
 
@@ -117,12 +119,18 @@ export const Post: FC<PostProps> = ({ data }) => {
       </CollapsableContent>
       <View style={styles.containerInteractions}>
         <Pressable style={styles.buttonReactions}>
-          <Feather name="heart" size={24} color="black" />
-          <TypoBase>{`${num_hugs} Hugs`}</TypoBase>
+          <Feather name="heart" size={24} color={Colors.dark_purple} />
+          <TypoBase>
+            {num_hugs !== 1 ? `${num_hugs} Hugs` : `${num_hugs} Hug`}
+          </TypoBase>
         </Pressable>
         <Pressable style={styles.buttonReactions} onPress={handlers.on}>
           <Feather name="message-circle" size={24} color="black" />
-          <TypoBase>{`${numOfComments} Comments`}</TypoBase>
+          <TypoBase>
+            {numOfComments !== 1
+              ? `${numOfComments} Comments`
+              : `${numOfComments} Comment`}
+          </TypoBase>
         </Pressable>
       </View>
     </View>

@@ -19,11 +19,11 @@ export const getPosts = async (page: number) => {
   };
 };
 
-export const updatePost = async (postId: number, data: Record<string, any>) => {
+export const updatePost = async (postId: string, data: Record<string, any>) => {
   const res = await fetchData({
     url: `${BASE_URL}/posts/${postId}`,
     method: "PATCH",
-    body: JSON.stringify(data),
+    body: data,
   });
   return res;
 };

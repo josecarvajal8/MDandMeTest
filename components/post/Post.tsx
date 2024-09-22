@@ -13,15 +13,18 @@ import { Feather } from "@expo/vector-icons";
 import { useToggle } from "@/hooks/useToggle";
 import { LinearGradient } from "expo-linear-gradient";
 import { Colors } from "@/constants/Colors";
+import { TrayModal } from "../modal";
+import { CommentsList } from "./commentList/CommentList";
+import { updatePost } from "@/services/posts";
 
 interface PostProps {
   data: IPost;
 }
 
-const CollapsableContent: FC<{ children: React.ReactNode, initialHeight?: number }> = ({
-  children,
-  initialHeight = 100,
-}) => {
+const CollapsableContent: FC<{
+  children: React.ReactNode;
+  initialHeight?: number;
+}> = ({ children, initialHeight = 100 }) => {
   const animationHeight = useRef(new Animated.Value(initialHeight)).current;
   const { state: isExpanded, handlers } = useToggle(false);
   const [contentHeight, setContentHeight] = useState(0);
@@ -61,11 +64,39 @@ const CollapsableContent: FC<{ children: React.ReactNode, initialHeight?: number
 };
 
 export const Post: FC<PostProps> = ({ data }) => {
-  const { title, patient_description, num_hugs, comments, assessment } = data;
-  const numOfComments = Object.keys(comments).length;
+  const { title, patient_description, num_hugs, comments, assessment, id } =
+    data;
+  const commentsKeys = Object.keys(comments);
+  const numOfComments = commentsKeys.length;
+
+  const { state: showComments, handlers } = useToggle(false);
+  const onCommentPost = async (comment: string, commentId?: string) => {
+    const lastCommentKey = commentsKeys.length
+      ? parseInt(commentsKeys[commentsKeys.length - 1])
+      : 0;
+    const commentPayload = {
+      comments: {
+        [`${lastCommentKey + 1}`]: {
+          display_name: "John Doe",
+          text: comment,
+          created_at: new Date().toISOString(),
+        },
+        ...comments,
+      },
+    };
+    const data = await updatePost(id, commentPayload);
+    console.log(data);
+  };
 
   return (
     <View style={styles.container}>
+      <TrayModal
+        isVisible={showComments}
+        onDismiss={handlers.off}
+        title={"Comments"}
+      >
+        <CommentsList comments={comments} onComment={onCommentPost} />
+      </TrayModal>
       <TypoBase fontStyle="bold" size="title" style={{ textAlign: "justify" }}>
         {title}
       </TypoBase>
@@ -84,7 +115,7 @@ export const Post: FC<PostProps> = ({ data }) => {
           <Feather name="heart" size={24} color="black" />
           <TypoBase>{`${num_hugs} Hugs`}</TypoBase>
         </Pressable>
-        <Pressable style={styles.buttonReactions}>
+        <Pressable style={styles.buttonReactions} onPress={handlers.on}>
           <Feather name="message-circle" size={24} color="black" />
           <TypoBase>{`${numOfComments} Comments`}</TypoBase>
         </Pressable>

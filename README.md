@@ -1,50 +1,29 @@
-# Welcome to your Expo app 👋
+## Post App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This App display some post coming from local db, using json-server. The app allows you to see the post and interact with it, you will be able to add Hugs and comments to a post.
 
-## Get started
+### Results
 
-1. Install dependencies
+![iOS preview](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXkwOTRuN2x0cjIyZnFmOW1wNGMxdnRob3V6cWdkMmF1cXdkdG9yYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ozeILD7FqWUarp6Pbw/giphy.gif) ![](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjBpNTJhZmF4cnRqNzV6bWx3b3NwdjBsNGRhazV4a29xazYwajZyYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/n06osa8UDDj9VUN1ju/giphy.gif) ![](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnlkYjU2Nmo1cWMzbXBva3l0dWJiYmthaDgwY21wczd5MXJpeXd3OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8p6DAiMx9VcreSfxqj/giphy.gif)
 
-   ```bash
-   npm install
-   ```
 
-2. Start the app
+### Before start
 
-   ```bash
-    npx expo start
-   ```
+This project was built using React Native with expo. To dive in, just make sure your environment is ready. You can find all the details in the React Native [documentation](https://reactnative.dev/docs/environment-setup).
 
-In the output, you'll find options to open the app in a
+#### Step 1: Clone the repo.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+`git clone https://github.com/josecarvajal8/MDandMeTest.git`
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+#### Step 2: Dependencies
 
-## Get a fresh project
+Install the dependencies by running:
+`yarn`
 
-When you're ready, run:
+#### Step 3: Run the app
 
-```bash
-npm run reset-project
-```
+Start the server by running:
+`yarn server`
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Start the App by running:
+`yarn start`
